@@ -1,7 +1,5 @@
 # MatAgent: A Physics-Aware Multi-Agent LLM Framework for Materials Science Discovery
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
-
 MatAgent is a cutting-edge, physics-aware multi-agent **Large Language Model (LLM)** framework designed to accelerate **materials science discovery and optimization**. This repository provides the source code and resources to facilitate **material property prediction, hypothesis generation, experimental data analysis, high-performance material discovery, data-driven experimentation, and literature review automation**.
 
 ## 🚀 Features
@@ -27,7 +25,6 @@ MatAgent/
 │── results/            # Experiment outputs, visualizations, and reports
 │── README.md           # Project documentation
 │── requirements.txt    # Required dependencies
-│── LICENSE             # License information
 ```
 
 ## 🔧 Installation
@@ -39,8 +36,8 @@ MatAgent/
 ### Setup
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/adibgpt/MatAgent.git
-   cd MatAgent
+   git clone https://github.com/A5hwIN101/MatAgent-Forge
+   cd MatAgent-Forge
    ```
 
 2. **Install dependencies**
@@ -83,19 +80,6 @@ MatAgent has been tested across several **benchmarking categories**, including:
 
 Check the **results/** directory for performance metrics and evaluation reports.
 
-## 📝 Citation
-If you use MatAgent in your research, please cite our paper:
-```
-@article{MatAgent2025,
-  title   = {MatAgent: A Physics-Aware Multi-Agent LLM Framework for Accelerating Materials Science Discovery},
-  author  = {Anonymous},
-  journal = {ICLR 2025 Submission},
-  year    = {2025}
-}
-```
-
-## 📜 License
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 We welcome contributions! Please follow these steps:
