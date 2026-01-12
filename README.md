@@ -318,11 +318,59 @@ src/data_sources/
 ├── rule_extractor.py     # LLM-based rule extraction
 ├── rule_storage.py       # JSON rule persistence & indexing
 ├── rule_loader.py        # Rule loading & caching
-└── main_orchestrator.py  # CLI pipeline coordinator
+└── main_orchestrator.py  # CLI pipeline coordinator  
 rules/
 ├── extracted_rules.json  # All extracted rules
 ├── rule_metadata.json    # Paper metadata
 └── rule_index.json       # Searchable index
+
+---
+
+## 🧬 Rule Integration into Analysis Pipeline (Phase 1.5)
+
+MatAgent-Forge now integrates extracted rules into the Analysis and Simulation Agents for evidence-backed material analysis.
+
+### Features
+- **Rule-Enhanced Analysis**: Analysis Agent references extracted rules for known materials
+- **Rule-Based Simulation**: Simulation Agent uses rules     feasibility assessment of novel materials
+- **Rule-Backed Verdicts**: Simulation verdicts reference supporting literature rules
+- **Confidence Scoring**: Each rule shows confidence level (0.0 - 1.0)
+
+### How It Works
+
+#### For Known Materials (Materials Project Database)
+1. Material properties are analyzed
+2. Relevant rules are matched to those properties
+3. Analysis includes "Rule-Based Insights" section
+4. Hypotheses reference rules for evidence
+
+#### For Novel Materials (Simulation)
+1. Feasibility is assessed using rules
+2. Violations reference specific rules
+3. Verdicts show supporting rules with confidence
+4. Better decision-making with literature backing
+
+### Example Output
+
+**Known Material (NaCl):**
+Electronic Behavior: Semiconductor with band gap 4.38 eV
+Rule: Band gap > 3.0 eV → Optoelectronics
+Rule-Based Insights:
+• Band gap > 3.0 eV → Optoelectronics (confidence: 100%)
+• Energy above hull < 0.05 eV/atom → Stable phase (confidence: 100%)
+
+**Novel Material (Cu2N5):**
+Verdict: Not feasible
+Stoichiometry Veto: Violates charge neutrality rule
+Supporting Rules:
+• Charge and electronegativity neutrality are chemical guidelines (confidence: 100%)
+
+### Technical Implementation
+
+Rules are loaded at application startup and cached in memory for performance:
+- Analysis Agent: Matches rules to material properties during analysis
+- Simulation Agent: References rules during feasibility assessment
+- Formatter: Displays rules with confidence scores in markdown output
 
 ---
 
