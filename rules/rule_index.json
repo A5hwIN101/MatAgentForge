@@ -1,4 +1,127 @@
 {
+  "property": {
+    "energy_above_hull": [
+      "rule_000013",
+      "rule_000014",
+      "rule_000015"
+    ],
+    "formation_energy": [
+      "rule_000016"
+    ],
+    "band_gap": [
+      "rule_000017",
+      "rule_000018",
+      "rule_000019"
+    ],
+    "bulk_modulus": [
+      "rule_000020"
+    ],
+    "shear_modulus": [
+      "rule_000021"
+    ],
+    "stoichiometry_ratio": [
+      "rule_000022"
+    ],
+    "pressure": [
+      "rule_000023"
+    ]
+  },
+  "domain": {
+    "general": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015",
+      "rule_000016",
+      "rule_000022",
+      "rule_000023"
+    ],
+    "photovoltaics": [
+      "rule_000017"
+    ],
+    "optoelectronics": [
+      "rule_000018"
+    ],
+    "thermoelectric": [
+      "rule_000019"
+    ],
+    "structural": [
+      "rule_000020"
+    ],
+    "battery": [
+      "rule_000021"
+    ]
+  },
+  "application": {
+    "Stable ground state": [
+      "rule_000013"
+    ],
+    "Unlikely to synthesize": [
+      "rule_000014"
+    ],
+    "Metastable, synthesizable": [
+      "rule_000015"
+    ],
+    "Thermodynamically stable": [
+      "rule_000016"
+    ],
+    "Photovoltaics": [
+      "rule_000017"
+    ],
+    "Optoelectronics": [
+      "rule_000018"
+    ],
+    "Thermoelectric": [
+      "rule_000019"
+    ],
+    "Structural applications": [
+      "rule_000020"
+    ],
+    "High-strength materials": [
+      "rule_000021"
+    ],
+    "Perovskite structure": [
+      "rule_000022"
+    ],
+    "High-pressure polymorph": [
+      "rule_000023"
+    ]
+  },
+  "rule_type": {
+    "stability": [
+      "rule_000013",
+      "rule_000014",
+      "rule_000015",
+      "rule_000016"
+    ],
+    "band_gap": [
+      "rule_000017",
+      "rule_000018",
+      "rule_000019"
+    ],
+    "mechanical": [
+      "rule_000020",
+      "rule_000021"
+    ],
+    "synthesis": [
+      "rule_000022"
+    ],
+    "phase_stability": [
+      "rule_000023"
+    ]
+  },
   "category": {
     "material_property": [
       0,
@@ -8,25 +131,36 @@
     "stability": [
       2,
       8,
-      12
+      12,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015",
+      "rule_000016",
+      "rule_000023"
     ],
     "synthesis": [
       3,
       4,
       7,
-      9
+      9,
+      "rule_000022"
     ],
     "property_application": [
       6,
       10,
-      11
+      11,
+      "rule_000017",
+      "rule_000018",
+      "rule_000019",
+      "rule_000020",
+      "rule_000021"
     ]
   },
   "keyword": {
-    "electronegativity": [
+    "promising": [
       0
     ],
-    "promising": [
+    "compounds.": [
       0
     ],
     "neutrality": [
@@ -35,23 +169,23 @@
     "guidelines": [
       0
     ],
+    "electronegativity": [
+      0
+    ],
     "chemical": [
       0,
       1
     ],
-    "compounds.": [
-      0
-    ],
     "charge": [
       0
     ],
-    "guidelines,": [
+    "desirable": [
       1
     ],
-    "associated": [
+    "materials.": [
       1
     ],
-    "properties": [
+    "implying": [
       1
     ],
     "specific": [
@@ -61,41 +195,56 @@
     "learns": [
       1
     ],
-    "model": [
-      1,
-      3
-    ],
     "that": [
       1
     ],
-    "materials.": [
+    "properties": [
       1
     ],
-    "implying": [
+    "guidelines,": [
       1
     ],
-    "materials": [
-      2,
-      4
+    "associated": [
+      1
     ],
     "formation": [
       2,
       6,
       7,
-      12
-    ],
-    "negative": [
-      2
+      12,
+      "rule_000016"
     ],
     "energy": [
       2,
       6,
       7,
       8,
-      12
+      12,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015",
+      "rule_000016"
     ],
     "stable.": [
       2
+    ],
+    "materials": [
+      2,
+      4,
+      "rule_000021"
+    ],
+    "negative": [
+      2
+    ],
+    "structure": [
+      3,
+      "rule_000022"
+    ],
+    "generative": [
+      3
+    ],
+    "estimation": [
+      3
     ],
     "used.": [
       3
@@ -103,19 +252,25 @@
     "diffusion-based": [
       3
     ],
-    "generative": [
-      3
-    ],
-    "structure": [
-      3
-    ],
-    "estimation": [
-      3
-    ],
     "crystal": [
       3
     ],
+    "model": [
+      3
+    ],
     "large": [
+      4
+    ],
+    "models": [
+      4
+    ],
+    "inorganic": [
+      4
+    ],
+    "used": [
+      4
+    ],
+    "(llms)": [
       4
     ],
     "language": [
@@ -124,28 +279,16 @@
     "discovery.": [
       4
     ],
-    "used": [
-      4
-    ],
-    "models": [
-      4
-    ],
-    "(llms)": [
-      4
-    ],
-    "inorganic": [
-      4
-    ],
-    "predictions": [
+    "material-property": [
       5
     ],
-    "material-property": [
+    "relationships": [
       5
     ],
     "application": [
       5
     ],
-    "relationships": [
+    "predictions": [
       5
     ],
     "mentioned.": [
@@ -154,13 +297,17 @@
     "stable": [
       6,
       8,
-      9
+      9,
+      "rule_000013",
+      "rule_000016"
     ],
     "thermodynamically": [
-      6
+      6,
+      "rule_000016"
     ],
     "-2.0": [
-      6
+      6,
+      "rule_000016"
     ],
     "metastable": [
       7
@@ -174,57 +321,172 @@
     "difference": [
       7
     ],
-    "ev/atom": [
-      8
-    ],
     "above": [
-      8
-    ],
-    "0.05": [
-      8
+      8,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015"
     ],
     "hull": [
-      8
+      8,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015"
+    ],
+    "ev/atom": [
+      8,
+      "rule_000013",
+      "rule_000014",
+      "rule_000015",
+      "rule_000016"
+    ],
+    "0.05": [
+      8,
+      "rule_000013",
+      "rule_000015"
     ],
     "phase": [
       8,
       9
     ],
-    "temperature": [
+    "1000°c": [
       9
     ],
     "high-temperature": [
       9
     ],
-    "1000°c": [
+    "temperature": [
       9
     ],
-    "band": [
-      10
-    ],
     "optoelectronics": [
-      10
+      10,
+      "rule_000018"
+    ],
+    "band": [
+      10,
+      "rule_000017",
+      "rule_000018",
+      "rule_000019"
     ],
     "modulus": [
-      11
+      11,
+      "rule_000020",
+      "rule_000021"
     ],
     "bulk": [
-      11
+      11,
+      "rule_000020"
     ],
     "applications": [
-      11
+      11,
+      "rule_000020"
     ],
     "structural": [
-      11
+      11,
+      "rule_000020"
     ],
     "-1.0": [
       12
     ],
     "synthesizable": [
-      12
+      12,
+      "rule_000015"
     ],
     "easily": [
       12
+    ],
+    "state": [
+      "rule_000013"
+    ],
+    "ground": [
+      "rule_000013"
+    ],
+    "synthesize": [
+      "rule_000014"
+    ],
+    "unlikely": [
+      "rule_000014"
+    ],
+    "metastable,": [
+      "rule_000015"
+    ],
+    "solar": [
+      "rule_000017"
+    ],
+    "(optimal": [
+      "rule_000017"
+    ],
+    "cells)": [
+      "rule_000017"
+    ],
+    "1.0-1.5": [
+      "rule_000017"
+    ],
+    "photovoltaics": [
+      "rule_000017"
+    ],
+    "3.0-5.0": [
+      "rule_000018"
+    ],
+    "detectors)": [
+      "rule_000018"
+    ],
+    "thermoelectric": [
+      "rule_000019"
+    ],
+    "seebeck": [
+      "rule_000019"
+    ],
+    "(good": [
+      "rule_000019"
+    ],
+    "coefficient)": [
+      "rule_000019"
+    ],
+    "0.1-0.5": [
+      "rule_000019"
+    ],
+    "(aerospace)": [
+      "rule_000020"
+    ],
+    "high-strength": [
+      "rule_000021"
+    ],
+    "(battery": [
+      "rule_000021"
+    ],
+    "shear": [
+      "rule_000021"
+    ],
+    "electrodes)": [
+      "rule_000021"
+    ],
+    "ratio": [
+      "rule_000022"
+    ],
+    "confidence)": [
+      "rule_000022"
+    ],
+    "stoichiometry": [
+      "rule_000022"
+    ],
+    "(feasible,": [
+      "rule_000022"
+    ],
+    "1:1:3": [
+      "rule_000022"
+    ],
+    "perovskite": [
+      "rule_000022"
+    ],
+    "pressure": [
+      "rule_000023"
+    ],
+    "polymorph": [
+      "rule_000023"
+    ],
+    "high-pressure": [
+      "rule_000023"
     ]
   }
 }

@@ -34,8 +34,9 @@
       "Ian Foster"
     ],
     "url": "http://arxiv.org/abs/1904.10423v2",
-    "extraction_date": "2026-01-11T16:02:49.080010",
-    "rules_count": 1
+    "extraction_date": "2026-01-12T23:26:43.503985",
+    "rules_count": 11,
+    "rejected_count": 0
   },
   "http://arxiv.org/abs/1905.03938v1": {
     "title": "Machine learning-guided synthesis of advanced inorganic materials",
