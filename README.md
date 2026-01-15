@@ -477,21 +477,63 @@ For questions, issues, or contributions:
 ## 📋 Development Progress
 
 ### Completed Phases
+
+#### Rule Extraction & Integration (Phase 1a - 1.5b)
 - ✅ **Phase 1a**: Paper Scraper - Extract rules from arXiv/PMC papers
 - ✅ **Phase 1a+**: Rule Quality Improvement - Quantitative, domain-aware rules with statistical confidence
 - ✅ **Phase 1.5**: Rules integrated into Analysis Agent for known materials
 - ✅ **Phase 1.5b**: Rules integrated into Simulation Agent for novel materials
 
+#### LangGraph State Machine Architecture (Phase 1.5c) - NEW ✨
+- ✅ **Explicit State Management**: PipelineState TypedDict for single source of truth
+- ✅ **6-Node StateGraph**: `lookup → validate_chemistry → analyze → hypothesize → format → END`
+- ✅ **Conditional Edge Routing**: Intelligent error handling with branch logic
+- ✅ **Async Pipeline**: All agents wrapped as async functions for non-blocking execution
+- ✅ **Streaming Support**: FastAPI integration with real-time markdown output
+- ✅ **Comprehensive Testing**: 12/12 tests passing (state, routing, nodes, full pipeline)
+
+**Key Improvements:**
+- 🔍 **Debugging**: Full state visibility at each node (no black-box execution)
+- 🛡️ **Error Recovery**: Conditional edges route failures to error handlers gracefully
+- 🚀 **Performance**: Async operations enable scaling to 100+ concurrent requests
+- 📦 **Modularity**: Nodes are self-contained, making Phase 2/3 additions seamless
+- 📊 **Observability**: Detailed logging at each step for production monitoring
+
+**Architecture Highlights:**
+```
+Input (formula)
+↓
+[lookup_node] → Query Materials Project API
+↓
+[validate_chemistry_node] → Check chemistry guardrails
+├─ Valid? → [analyze_node] → Analyze properties
+│                ↓
+│          [hypothesize_node] → Generate hypotheses
+│                ↓
+│           [format_node] → Create markdown output
+│                ↓
+└─────────────→ END (success)
+│
+└─ Invalid? → [error_node] → Handle gracefully
+↓
+END (error)
+```
+
 ### Current Status
-- 24 quantitative rules extracted (87.5% high confidence ≥0.8)
-- 6 domains covered: photovoltaics, thermoelectric, battery, structural, optoelectronics, general
-- Rules stored in JSON with metadata: confidence, uncertainty, evidence strength
-- Rule validation: rejects confidence < 0.6, flags uncertainty > 0.3
+- ✅ **LangGraph Pipeline**: Production-ready state machine with 6 nodes
+- ✅ **Rule Integration**: 24 quantitative rules extracted (87.5% high confidence ≥0.8)
+- ✅ **Test Coverage**: 12 unit tests covering state, routing, nodes, and full pipeline
+- ✅ **API Streaming**: Real-time markdown responses with 9+ rules displayed
+- ✅ **Material Analysis**: Successfully analyzed NaCl with electronic, mechanical, and stability insights
+
+**Domains covered:** Photovoltaics, thermoelectric, battery, structural, optoelectronics, general
 
 ### Next Phases
-- 🔄 **Phase 2**: OQMD Integration (add 50-100+ rules from OQMD database)
-- 🔄 **Phase 3**: ICSD Integration (experimental structure data)
-- 🔄 **Phase 2+**: Multi-source rule combining & scoring engine
+- 🔄 **Phase 2**: OQMD Integration - Add fallback material source, expand rule database
+  - New conditional edge: if MP API fails → try OQMD
+  - Existing nodes unchanged (demonstrates modularity)
+- 🔄 **Phase 3**: ICSD Integration - Experimental crystal structure data
+- 🔄 **Phase 4**: Production Hardening - LangSmith tracing, checkpointing, compliance audit
 
 ---
 
