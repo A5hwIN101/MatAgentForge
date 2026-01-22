@@ -16,6 +16,7 @@ It is designed to accelerate materials exploration by turning database propertie
 #### Rule Extraction & Integration (Phase 1a - 1.5b)
 - ✅ **Phase 1a**: Paper Scraper - Extract rules from arXiv/PMC papers
 - ✅ **Phase 1a+**: Rule Quality Improvement - Quantitative, domain-aware rules with statistical confidence
+- ✅ **Phase 1a++**: Standardized Rule Schema - Complete schema with all fields (edge_cases, fails_for, validation_status, etc.)
 - ✅ **Phase 1.5**: Rules integrated into Analysis Agent for known materials (Materials Project hits)
 - ✅ **Phase 1.5b**: Simulation Agent rule-integration implemented (experimental module; not yet routed by LangGraph pipeline)
 
@@ -305,9 +306,10 @@ MatAgent-Forge/
 
 ### Rule Engine
 - **📚 Paper scraping**: arXiv + PMC (`src/data_sources/paper_scraper.py`)
-- **🧠 Quantitative rule extraction**: LLM-driven extraction via Groq (`src/data_sources/rule_extractor.py`)
-- **📦 Rule storage/indexing**: JSON persistence + indexing + validation (`src/data_sources/rule_storage.py`)
-- **🔎 Rule matching**: retrieve relevant rules by property/keywords (`src/data_sources/rule_loader.py`)
+- **🧠 Quantitative rule extraction**: LLM-driven extraction via Groq with standardized schema (`src/data_sources/rule_extractor.py`)
+- **📦 Rule storage/indexing**: JSON persistence + multi-dimensional indexing + validation (`src/data_sources/rule_storage.py`)
+- **🔎 Rule matching**: retrieve relevant rules by property/keywords/domain (`src/data_sources/rule_loader.py`)
+- **✅ Schema validation**: Comprehensive validation with array field handling and backward compatibility
 
 ### Simulation Agent (experimental)
 - **🔬 M3GNet-based feasibility module** exists (`src/agents/simulation_agent.py`) and can attach literature rules, but it is **not currently routed by the LangGraph pipeline**.
@@ -343,6 +345,77 @@ Outputs:
 - **Stability indicators** (formation energy / energy above hull bounds)
 - **Synthesis feasibility** (temperature/pressure/processing thresholds when present)
 - **Application predictions** (e.g., band gap → optoelectronics)
+
+### Standardized Rule Structure (Latest Update)
+
+The rule extraction pipeline now outputs rules in a **standardized, comprehensive schema** that includes all quantitative and metadata fields:
+
+#### Complete Rule Schema
+
+```json
+{
+  "rule_text": "Human-readable rule statement",
+  "rule_type": "chemical_constraint|stability|band_gap|mechanical|synthesis|phase_stability",
+  "property": "specific_property_name (e.g., charge_neutrality, energy_above_hull, band_gap)",
+  "threshold_value": numeric_value_or_null,
+  "threshold_unit": "unit (e.g., eV/atom, GPa, °C, dimensionless)",
+  "operator": "=|>|<|>=|<=|range",
+  "range_start": numeric_or_null,
+  "range_end": numeric_or_null,
+  "application": "Specific use case or implication",
+  "domain": ["list", "of", "applicable", "domains"],
+  "category": "stability|material_property|property_application|synthesis",
+  "evidence_strength": "strong|medium|weak",
+  "statistical_confidence": 0.0-1.0,
+  "confidence": 0.0-1.0,
+  "uncertainty": 0.0-1.0,
+  "source_paper_id": "arxiv_url",
+  "source_section": "abstract|introduction|results|discussion",
+  "publication_year": YYYY,
+  "validation_status": "physics_based|validated|extracted",
+  "rule_id": "rule_XXXXXX",
+  "edge_cases": ["list", "of", "exceptions"],
+  "fails_for": ["list", "of", "failure", "cases"],
+  "evidence_count": optional_integer,
+  "validated_materials": ["optional", "list"]
+}
+```
+
+#### Key Features
+
+1. **Quantitative Thresholds**: All rules include numeric thresholds with units and operators (`=`, `>`, `<`, `>=`, `<=`, `range`)
+2. **Domain Arrays**: Domain is always an array (e.g., `["photovoltaics", "optoelectronics"]`) for multi-domain rules
+3. **Uncertainty Calculation**: Automatically calculated as `(1 - confidence)` to ensure consistency
+4. **Validation Status**: Automatically determined:
+   - `"physics_based"` for fundamental laws (charge neutrality, Pauling rules)
+   - `"validated"` if evidence_count > 1000
+   - `"extracted"` otherwise
+5. **Edge Cases & Failure Modes**: Extracted from paper abstracts to document exceptions
+6. **Rule ID Format**: Zero-padded 6-digit format (`rule_000001`, `rule_000002`, etc.)
+
+#### Extraction Enhancements
+
+- **LLM-Powered Parsing**: Uses Groq (Llama-3.1-8b-instant) to extract quantitative thresholds, operators, domains, and edge cases from paper abstracts
+- **Schema Validation**: Comprehensive validation ensures all required fields are present and correctly formatted
+- **Array Handling**: Proper handling of array fields (domain, edge_cases, fails_for) throughout the storage and indexing system
+  - Domain arrays are correctly indexed (each domain item indexed separately)
+  - Domain filtering works with array-based domains (checks if domain string is in array)
+  - Statistics correctly count each domain item from multi-domain rules
+- **Backward Compatibility**: Handles legacy string-based domain fields and converts them to arrays automatically
+
+#### Testing
+
+Test the updated extraction pipeline:
+
+```bash
+python test_rule_extraction.py
+```
+
+Or run unit tests for domain array handling:
+
+```bash
+python test_domain_fix.py
+```
 
 ---
 
