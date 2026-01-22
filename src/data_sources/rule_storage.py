@@ -195,9 +195,11 @@ class RuleStorage:
         """
         normalized = rule.copy()
         
-        # Generate rule_id if missing
+        # Generate rule_id if missing (zero-padded 6-digit)
         if "rule_id" not in normalized:
-            normalized["rule_id"] = f"rule_{hash(normalized.get('rule_text', '')) % 1000000}"
+            # Use hash-based ID, but ensure it's zero-padded 6-digit
+            rule_hash = abs(hash(normalized.get('rule_text', ''))) % 1000000
+            normalized["rule_id"] = f"rule_{rule_hash:06d}"
         
         # Ensure backward compatibility fields
         if "statistical_confidence" not in normalized and "confidence" in normalized:
@@ -218,7 +220,12 @@ class RuleStorage:
             normalized["rule_type"] = type_mapping.get(category, "stability")
         
         if "domain" not in normalized:
-            normalized["domain"] = "general"
+            normalized["domain"] = ["general"]
+        # Ensure domain is always an array
+        if isinstance(normalized.get("domain"), str):
+            normalized["domain"] = [normalized["domain"]]
+        elif not isinstance(normalized.get("domain"), list):
+            normalized["domain"] = ["general"]
         
         if "evidence_strength" not in normalized:
             # Infer from confidence
@@ -226,15 +233,55 @@ class RuleStorage:
             if conf >= 0.85:
                 normalized["evidence_strength"] = "strong"
             elif conf >= 0.65:
-                normalized["evidence_strength"] = "moderate"
+                normalized["evidence_strength"] = "medium"  # Changed from "moderate" to "medium"
             else:
                 normalized["evidence_strength"] = "weak"
+        # Normalize "moderate" to "medium" for consistency
+        if normalized.get("evidence_strength") == "moderate":
+            normalized["evidence_strength"] = "medium"
         
         if "uncertainty" not in normalized:
-            normalized["uncertainty"] = 0.0
+            # Calculate uncertainty as (1 - confidence)
+            conf = normalized.get("statistical_confidence", normalized.get("confidence", 0.7))
+            normalized["uncertainty"] = round(1.0 - conf, 3)
+        else:
+            # Ensure uncertainty + confidence ≈ 1.0
+            conf = normalized.get("statistical_confidence", normalized.get("confidence", 0.7))
+            unc = normalized.get("uncertainty", 0.0)
+            if abs((unc + conf) - 1.0) > 0.1:
+                normalized["uncertainty"] = round(1.0 - conf, 3)
         
         if "validation_status" not in normalized:
-            normalized["validation_status"] = "extracted"
+            # Determine validation_status based on rule characteristics
+            rule_type = normalized.get("rule_type", "")
+            property_name = normalized.get("property", "")
+            evidence_count = normalized.get("evidence_count")
+            rule_text = normalized.get("rule_text", "")
+            
+            # Check for physics-based rules
+            if rule_type == "chemical_constraint":
+                normalized["validation_status"] = "physics_based"
+            elif evidence_count is not None and evidence_count > 1000:
+                normalized["validation_status"] = "validated"
+            else:
+                normalized["validation_status"] = "extracted"
+        
+        # Ensure edge_cases and fails_for are arrays
+        if "edge_cases" not in normalized:
+            normalized["edge_cases"] = []
+        elif not isinstance(normalized.get("edge_cases"), list):
+            normalized["edge_cases"] = [normalized["edge_cases"]] if normalized.get("edge_cases") else []
+        
+        if "fails_for" not in normalized:
+            normalized["fails_for"] = []
+        elif not isinstance(normalized.get("fails_for"), list):
+            normalized["fails_for"] = [normalized["fails_for"]] if normalized.get("fails_for") else []
+        
+        # Ensure validated_materials is an array
+        if "validated_materials" not in normalized:
+            normalized["validated_materials"] = []
+        elif not isinstance(normalized.get("validated_materials"), list):
+            normalized["validated_materials"] = [normalized["validated_materials"]] if normalized.get("validated_materials") else []
         
         if "rule_frequency" not in normalized:
             normalized["rule_frequency"] = 1
@@ -274,12 +321,18 @@ class RuleStorage:
                 if rule_id not in index["property"][property_name]:
                     index["property"][property_name].append(rule_id)
 
-            # Index by domain
-            domain = rule.get("domain", "general")
-            if domain not in index["domain"]:
-                index["domain"][domain] = []
-            if rule_id not in index["domain"][domain]:
-                index["domain"][domain].append(rule_id)
+            # Index by domain (handle both array and string for backward compatibility)
+            domain = rule.get("domain", ["general"])
+            if isinstance(domain, str):
+                domain = [domain]
+            elif not isinstance(domain, list):
+                domain = ["general"]
+            
+            for d in domain:
+                if d not in index["domain"]:
+                    index["domain"][d] = []
+                if rule_id not in index["domain"][d]:
+                    index["domain"][d].append(rule_id)
 
             # Index by application
             application = rule.get("application", "")
@@ -398,8 +451,9 @@ class RuleStorage:
 
             rule_hash = self._hash_rule_text(rule_text)
             if rule_hash not in existing_hashes:
-                # Add unique rule ID
-                normalized_rule["rule_id"] = f"rule_{len(existing_rules) + len(new_rules):06d}"
+                # Add unique rule ID (zero-padded 6-digit)
+                rule_counter = len(existing_rules) + len(new_rules)
+                normalized_rule["rule_id"] = f"rule_{rule_counter:06d}"
                 new_rules.append(normalized_rule)
                 existing_hashes.add(rule_hash)
             else:
@@ -493,7 +547,12 @@ class RuleStorage:
             filtered_rules = [r for r in filtered_rules if r.get("property") == property]
 
         if domain:
-            filtered_rules = [r for r in filtered_rules if r.get("domain") == domain]
+            # Domain is now an array, so check if the domain string is in the array
+            filtered_rules = [
+                r for r in filtered_rules 
+                if isinstance(r.get("domain"), list) and domain in r.get("domain", [])
+                or (isinstance(r.get("domain"), str) and r.get("domain") == domain)
+            ]
 
         if rule_type:
             filtered_rules = [r for r in filtered_rules if r.get("rule_type") == rule_type]
@@ -598,8 +657,15 @@ class RuleStorage:
             else:
                 confidence_bins["low"] += 1
             
-            domain = rule.get("domain", "general")
-            domains[domain] = domains.get(domain, 0) + 1
+            # Domain is now an array, so iterate through each domain item
+            domain = rule.get("domain", ["general"])
+            if isinstance(domain, str):
+                domain = [domain]
+            elif not isinstance(domain, list):
+                domain = ["general"]
+            
+            for d in domain:
+                domains[d] = domains.get(d, 0) + 1
             
             rule_type = rule.get("rule_type", "unknown")
             rule_types[rule_type] = rule_types.get(rule_type, 0) + 1

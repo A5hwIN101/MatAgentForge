@@ -65,19 +65,25 @@ Abstract:
 **REQUIRED SCHEMA - Each rule MUST have ALL these fields:**
 
 {{
-  "rule_type": "stability|band_gap|mechanical|synthesis|phase_stability",
-  "property": "formation_energy|band_gap|bulk_modulus|energy_above_hull|shear_modulus|temperature|pressure|composition",
-  "threshold_value": NUMBER (e.g., 2.5, -1.0, 1000) - REQUIRED,
-  "threshold_unit": "eV|eV/atom|GPa|MPa|K|°C|ratio" - REQUIRED,
-  "operator": ">|<|=|>=|<=|in_range" - REQUIRED,
-  "range_start": NUMBER or null (for "in_range" operator),
-  "range_end": NUMBER or null (for "in_range" operator),
-  "application": "TEXT describing application (e.g., Optoelectronics, Thermal stability)",
-  "domain": ["general"] or ["photovoltaics", "thermoelectric", "battery", "magnet", "catalyst", "optoelectronics", "structural"] - MUST be array,
-  "evidence_strength": "strong|moderate|weak",
-  "uncertainty": NUMBER (0.0-1.0),
+  "rule_type": "chemical_constraint|stability|band_gap|mechanical|synthesis|phase_stability",
+  "property": "specific_property_name (e.g., charge_neutrality, energy_above_hull, band_gap, formation_energy, bulk_modulus, shear_modulus, temperature, pressure)",
+  "threshold_value": NUMBER (e.g., 2.5, -1.0, 1000) or null - REQUIRED,
+  "threshold_unit": "unit (e.g., eV, eV/atom, GPa, MPa, K, °C, dimensionless, Pauling scale)" - REQUIRED,
+  "operator": "=|>|<|>=|<=|range" - REQUIRED,
+  "range_start": NUMBER or null (REQUIRED if operator is "range"),
+  "range_end": NUMBER or null (REQUIRED if operator is "range"),
+  "application": "Specific use case or implication (e.g., Optoelectronics, Thermal stability, Bonding type prediction)",
+  "domain": ["list", "of", "applicable", "domains"] - MUST be array, e.g., ["photovoltaics", "optoelectronics"] or ["general"],
+  "category": "stability|material_property|property_application|synthesis",
+  "evidence_strength": "strong|medium|weak",
+  "statistical_confidence": NUMBER (0.0-1.0),
   "confidence": NUMBER (0.0-1.0),
-  "rule_text": "Human-readable rule text with threshold"
+  "uncertainty": NUMBER (0.0-1.0) - should be (1 - confidence),
+  "rule_text": "Human-readable rule statement with threshold",
+  "edge_cases": ["list", "of", "exceptions"] - array of edge cases or exceptions,
+  "fails_for": ["list", "of", "failure", "cases"] - array of materials/conditions where rule fails,
+  "evidence_count": INTEGER or null - number of materials/data points supporting rule if mentioned,
+  "validated_materials": ["optional", "list"] - array of material examples if mentioned
 }}
 
 **EXAMPLE VALID RULE:**
@@ -89,15 +95,22 @@ Abstract:
   "operator": ">",
   "range_start": null,
   "range_end": null,
-  "application": "Optoelectronics",
+  "application": "Optoelectronics applications",
   "domain": ["photovoltaics", "optoelectronics"],
+  "category": "property_application",
   "evidence_strength": "strong",
-  "uncertainty": 0.2,
+  "statistical_confidence": 0.85,
   "confidence": 0.85,
-  "rule_text": "Band gap > 3.0 eV → Optoelectronics applications"
+  "uncertainty": 0.15,
+  "rule_text": "Band gap > 3.0 eV → Optoelectronics applications",
+  "edge_cases": ["narrow_band_gap_semiconductors"],
+  "fails_for": ["metallic_compounds"],
+  "evidence_count": null,
+  "validated_materials": []
 }}
 
 **RULE TYPES:**
+- "chemical_constraint": Fundamental chemical rules (charge neutrality, Pauling rules, electronegativity)
 - "stability": Formation energy, energy above hull thresholds
 - "band_gap": Band gap thresholds for applications
 - "mechanical": Bulk modulus, shear modulus thresholds
@@ -115,12 +128,16 @@ Abstract:
 - "general": If unclear
 
 **CRITICAL RULES:**
-1. ALL fields must be populated (no "N/A", no empty strings, no null for required fields)
-2. threshold_value MUST be a NUMBER (not string, not null)
-3. operator MUST be one of: >, <, =, >=, <=, in_range
-4. domain MUST be an ARRAY (even if ["general"])
-5. If abstract has NO quantitative rules, return: []
-6. Do NOT return vague text rules without numeric thresholds
+1. ALL fields must be populated (no "N/A", no empty strings, no null for required fields except where explicitly allowed)
+2. threshold_value MUST be a NUMBER or null (not string)
+3. operator MUST be one of: =, >, <, >=, <=, range
+4. If operator is "range", BOTH range_start and range_end MUST be numbers (not null)
+5. domain MUST be an ARRAY (even if ["general"])
+6. evidence_strength MUST be "strong", "medium", or "weak" (NOT "moderate")
+7. uncertainty should be calculated as (1 - confidence) if not explicitly stated
+8. edge_cases and fails_for MUST be arrays (can be empty [])
+9. If abstract has NO quantitative rules, return: []
+10. Do NOT return vague text rules without numeric thresholds
 
 **If you cannot extract quantitative data with ALL required fields, return empty array: []**
 
@@ -153,11 +170,19 @@ Return ONLY a JSON array. No markdown, no explanation, no additional text."""
             return False
         
         # operator must be valid
-        valid_operators = ['>', '<', '=', '>=', '<=', 'in_range']
+        valid_operators = ['>', '<', '=', '>=', '<=', 'range']
         operator = rule.get('operator')
         if operator not in valid_operators:
             logger.debug(f"Validation failed: operator '{operator}' is not valid")
             return False
+        
+        # If operator is "range", both range_start and range_end must be numbers
+        if operator == 'range':
+            range_start = rule.get('range_start')
+            range_end = rule.get('range_end')
+            if not isinstance(range_start, (int, float)) or not isinstance(range_end, (int, float)):
+                logger.debug(f"Validation failed: operator 'range' requires both range_start and range_end to be numbers")
+                return False
         
         # domain must be an array (or at least not None/empty)
         domain = rule.get('domain')
@@ -185,7 +210,7 @@ Return ONLY a JSON array. No markdown, no explanation, no additional text."""
             return False
         
         # rule_type must be valid
-        valid_rule_types = ["stability", "band_gap", "mechanical", "synthesis", "phase_stability"]
+        valid_rule_types = ["chemical_constraint", "stability", "band_gap", "mechanical", "synthesis", "phase_stability"]
         rule_type = rule.get('rule_type')
         if rule_type not in valid_rule_types:
             logger.debug(f"Validation failed: rule_type '{rule_type}' is not valid")
@@ -378,16 +403,44 @@ Return ONLY a JSON array. No markdown, no explanation, no additional text."""
         threshold_value = rule.get("threshold_value")
         threshold_unit = rule.get("threshold_unit", "")
         operator = rule.get("operator", ">")
+        # Normalize operator: convert "in_range" to "range" for backward compatibility
+        if operator == "in_range":
+            operator = "range"
         range_start = rule.get("range_start")
         range_end = rule.get("range_end")
         application = rule.get("application", "")
         domain_raw = rule.get("domain", "general")
-        evidence_strength = rule.get("evidence_strength", "moderate")
+        evidence_strength_raw = rule.get("evidence_strength", "medium")
+        # Normalize evidence_strength: convert "moderate" to "medium"
+        if evidence_strength_raw == "moderate":
+            evidence_strength = "medium"
+        else:
+            evidence_strength = evidence_strength_raw if evidence_strength_raw in ["strong", "medium", "weak"] else "medium"
         statistical_confidence = float(rule.get("statistical_confidence", rule.get("confidence", 0.7)))
-        uncertainty = float(rule.get("uncertainty", 0.0))
+        confidence = float(rule.get("confidence", statistical_confidence))
+        # Calculate uncertainty as (1 - confidence) if not provided or if it doesn't make sense
+        uncertainty_raw = rule.get("uncertainty")
+        if uncertainty_raw is None:
+            uncertainty = round(1.0 - confidence, 3)
+        else:
+            uncertainty = float(uncertainty_raw)
+            # Ensure uncertainty + confidence ≈ 1.0 (within 0.1 tolerance)
+            if abs((uncertainty + confidence) - 1.0) > 0.1:
+                uncertainty = round(1.0 - confidence, 3)
+        
+        # Extract new fields
+        edge_cases_raw = rule.get("edge_cases", [])
+        fails_for_raw = rule.get("fails_for", [])
+        evidence_count = rule.get("evidence_count")
+        validated_materials_raw = rule.get("validated_materials", [])
+        
+        # Ensure edge_cases and fails_for are arrays
+        edge_cases = edge_cases_raw if isinstance(edge_cases_raw, list) else ([] if not edge_cases_raw else [str(edge_cases_raw)])
+        fails_for = fails_for_raw if isinstance(fails_for_raw, list) else ([] if not fails_for_raw else [str(fails_for_raw)])
+        validated_materials = validated_materials_raw if isinstance(validated_materials_raw, list) else ([] if not validated_materials_raw else [str(validated_materials_raw)])
 
         # Validate rule_type
-        valid_rule_types = ["stability", "band_gap", "mechanical", "synthesis", "phase_stability"]
+        valid_rule_types = ["chemical_constraint", "stability", "band_gap", "mechanical", "synthesis", "phase_stability"]
         if rule_type not in valid_rule_types or rule_type in [None, "N/A", ""]:
             rule_type = "stability"  # Default
 
@@ -410,15 +463,24 @@ Return ONLY a JSON array. No markdown, no explanation, no additional text."""
         frequency_boost = self._calculate_frequency_boost(rule_text, abstract)
         
         # Adjust statistical confidence based on frequency
-        adjusted_confidence = min(1.0, statistical_confidence + frequency_boost)
+        adjusted_confidence = min(1.0, confidence + frequency_boost)
         
         # Adjust based on evidence strength
         if evidence_strength == "strong":
             adjusted_confidence = min(1.0, adjusted_confidence + 0.1)
         elif evidence_strength == "weak":
             adjusted_confidence = max(0.0, adjusted_confidence - 0.1)
+        
+        # Recalculate uncertainty based on adjusted confidence
+        uncertainty = round(1.0 - adjusted_confidence, 3)
+        
+        # Determine validation_status
+        validation_status = self._determine_validation_status(rule_type, property_name, evidence_count, rule_text)
+        
+        # Map rule_type to category
+        category = self._map_rule_type_to_category(rule_type)
 
-        # Build enhanced rule
+        # Build enhanced rule with all required fields
         enhanced_rule = {
             "rule_text": rule_text,
             "rule_type": rule_type,
@@ -430,22 +492,20 @@ Return ONLY a JSON array. No markdown, no explanation, no additional text."""
             "range_end": range_end,
             "application": application,
             "domain": domain,
-            "category": self._map_rule_type_to_category(rule_type),  # For backward compatibility
+            "category": category,
             "evidence_strength": evidence_strength,
             "statistical_confidence": round(adjusted_confidence, 3),
-            "confidence": round(adjusted_confidence, 3),  # For backward compatibility
-            "uncertainty": round(uncertainty, 3),
+            "confidence": round(adjusted_confidence, 3),
+            "uncertainty": uncertainty,
             "source_paper_id": paper_id,
-            "source_title": paper_title,
             "source_section": "abstract",
             "publication_year": publication_year,
-            "rule_frequency": self._count_rule_mentions(rule_text, abstract),
-            "validation_status": rule.get("validation_status", "extracted")
+            "validation_status": validation_status,
+            "edge_cases": edge_cases,
+            "fails_for": fails_for,
+            "evidence_count": evidence_count,
+            "validated_materials": validated_materials
         }
-
-        # Ensure confidence field exists for backward compatibility
-        if "confidence" not in enhanced_rule:
-            enhanced_rule["confidence"] = enhanced_rule["statistical_confidence"]
 
         return enhanced_rule
 
@@ -470,14 +530,19 @@ Abstract:
 **EVERY rule MUST have ALL these fields with REAL values (no "N/A", no null for required fields):**
 
 REQUIRED FIELDS:
-- "rule_type": MUST be one of: "stability", "band_gap", "mechanical", "synthesis", "phase_stability"
-- "property": MUST be one of: "formation_energy", "band_gap", "bulk_modulus", "energy_above_hull", "shear_modulus", "temperature", "pressure", "composition"
-- "threshold_value": MUST be a NUMBER (e.g., 2.5, -1.0, 1000) - NOT null, NOT "N/A"
-- "threshold_unit": MUST be: "eV", "eV/atom", "GPa", "MPa", "K", "°C", "ratio"
-- "operator": MUST be: ">", "<", "=", ">=", "<=", or "in_range"
+- "rule_type": MUST be one of: "chemical_constraint", "stability", "band_gap", "mechanical", "synthesis", "phase_stability"
+- "property": MUST be a specific property name (e.g., "charge_neutrality", "formation_energy", "band_gap", "bulk_modulus", "energy_above_hull", "shear_modulus", "temperature", "pressure")
+- "threshold_value": MUST be a NUMBER (e.g., 2.5, -1.0, 1000) or null - NOT "N/A"
+- "threshold_unit": MUST be a unit string (e.g., "eV", "eV/atom", "GPa", "MPa", "K", "°C", "dimensionless", "Pauling scale")
+- "operator": MUST be: "=", ">", "<", ">=", "<=", or "range"
+- "range_start" and "range_end": MUST be numbers if operator is "range", null otherwise
 - "domain": MUST be an ARRAY like ["photovoltaics"] or ["general"] - NOT string, NOT null
+- "evidence_strength": MUST be "strong", "medium", or "weak" (NOT "moderate")
 - "confidence": MUST be a NUMBER between 0.0 and 1.0
+- "uncertainty": MUST be a NUMBER between 0.0 and 1.0 (should be 1 - confidence)
 - "rule_text": MUST describe the quantitative rule
+- "edge_cases": MUST be an array (can be empty [])
+- "fails_for": MUST be an array (can be empty [])
 
 **VALID EXAMPLE (copy this structure exactly):**
 [
@@ -492,9 +557,14 @@ REQUIRED FIELDS:
     "application": "Optoelectronics",
     "domain": ["photovoltaics", "optoelectronics"],
     "evidence_strength": "strong",
-    "uncertainty": 0.2,
+    "statistical_confidence": 0.85,
     "confidence": 0.85,
-    "rule_text": "Band gap > 3.0 eV → Optoelectronics applications"
+    "uncertainty": 0.15,
+    "rule_text": "Band gap > 3.0 eV → Optoelectronics applications",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": null,
+    "validated_materials": []
   }}
 ]
 
@@ -551,9 +621,42 @@ Return ONLY valid JSON array. No markdown, no explanation."""
         abstract_lower = abstract.lower()
         return sum(1 for term in key_terms if term.lower() in abstract_lower)
 
+    def _determine_validation_status(self, rule_type: str, property_name: str, evidence_count: Optional[int], rule_text: str) -> str:
+        """
+        Determine validation_status based on rule characteristics.
+        
+        Args:
+            rule_type: Type of rule
+            property_name: Property name
+            evidence_count: Number of evidence points if available
+            rule_text: Rule text for pattern matching
+            
+        Returns:
+            "physics_based", "validated", or "extracted"
+        """
+        # Check for physics-based rules (fundamental laws)
+        physics_based_keywords = ["charge neutrality", "charge neutral", "pauling", "electronegativity", 
+                                  "conservation", "thermodynamic", "fundamental"]
+        rule_text_lower = rule_text.lower()
+        property_lower = property_name.lower()
+        
+        if rule_type == "chemical_constraint":
+            return "physics_based"
+        
+        if any(keyword in rule_text_lower or keyword in property_lower for keyword in physics_based_keywords):
+            return "physics_based"
+        
+        # Check if evidence_count > 1000
+        if evidence_count is not None and evidence_count > 1000:
+            return "validated"
+        
+        # Default to extracted
+        return "extracted"
+    
     def _map_rule_type_to_category(self, rule_type: str) -> str:
         """Map new rule_type to legacy category for backward compatibility."""
         mapping = {
+            "chemical_constraint": "stability",
             "stability": "stability",
             "band_gap": "property_application",
             "mechanical": "property_application",
