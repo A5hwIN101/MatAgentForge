@@ -9,7 +9,10 @@
     "range_start": null,
     "range_end": null,
     "application": "Thermodynamic stability filter",
-    "domain": ["inorganic", "crystalline"],
+    "domain": [
+      "inorganic",
+      "crystalline"
+    ],
     "category": "stability",
     "evidence_strength": "strong",
     "statistical_confidence": 1.0,
@@ -20,7 +23,9 @@
     "publication_year": 2022,
     "validation_status": "physics_based",
     "rule_id": "rule_000000",
-    "edge_cases": ["mixed_valence_compounds"],
+    "edge_cases": [
+      "mixed_valence_compounds"
+    ],
     "fails_for": []
   },
   {
@@ -33,7 +38,10 @@
     "range_start": null,
     "range_end": null,
     "application": "Bonding type prediction",
-    "domain": ["inorganic", "binary_compounds"],
+    "domain": [
+      "inorganic",
+      "binary_compounds"
+    ],
     "category": "material_property",
     "evidence_strength": "strong",
     "statistical_confidence": 0.92,
@@ -44,8 +52,12 @@
     "publication_year": 2022,
     "validation_status": "extracted",
     "rule_id": "rule_000001",
-    "edge_cases": ["polar_covalent_bonds"],
-    "fails_for": ["organic_compounds"]
+    "edge_cases": [
+      "polar_covalent_bonds"
+    ],
+    "fails_for": [
+      "organic_compounds"
+    ]
   },
   {
     "rule_text": "Formation energy < -1.0 eV/atom → Thermodynamically stable (exothermic formation)",
@@ -57,7 +69,9 @@
     "range_start": null,
     "range_end": null,
     "application": "Synthesis feasibility (high probability)",
-    "domain": ["general"],
+    "domain": [
+      "general"
+    ],
     "category": "stability",
     "evidence_strength": "strong",
     "statistical_confidence": 0.95,
@@ -68,7 +82,9 @@
     "publication_year": 2025,
     "validation_status": "extracted",
     "rule_id": "rule_000002",
-    "edge_cases": ["kinetically_trapped_phases"],
+    "edge_cases": [
+      "kinetically_trapped_phases"
+    ],
     "fails_for": []
   },
   {
@@ -81,7 +97,9 @@
     "range_start": null,
     "range_end": null,
     "application": "Ground state stability",
-    "domain": ["general"],
+    "domain": [
+      "general"
+    ],
     "category": "stability",
     "evidence_strength": "strong",
     "statistical_confidence": 0.98,
@@ -92,10 +110,14 @@
     "publication_year": 2019,
     "validation_status": "validated",
     "rule_id": "rule_000003",
-    "edge_cases": ["metastable_phases_at_high_T"],
+    "edge_cases": [
+      "metastable_phases_at_high_T"
+    ],
     "fails_for": [],
     "evidence_count": 380000,
-    "validated_materials": ["Materials_Project_database"]
+    "validated_materials": [
+      "Materials_Project_database"
+    ]
   },
   {
     "rule_text": "0.05 < Energy above hull < 0.2 eV/atom → Metastable (synthesizable with kinetic control)",
@@ -107,7 +129,9 @@
     "range_start": 0.05,
     "range_end": 0.2,
     "application": "Metastable synthesis",
-    "domain": ["general"],
+    "domain": [
+      "general"
+    ],
     "category": "stability",
     "evidence_strength": "medium",
     "statistical_confidence": 0.68,
@@ -118,7 +142,10 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000004",
-    "edge_cases": ["rapid_quenching", "thin_film_deposition"],
+    "edge_cases": [
+      "rapid_quenching",
+      "thin_film_deposition"
+    ],
     "fails_for": []
   },
   {
@@ -131,7 +158,9 @@
     "range_start": null,
     "range_end": null,
     "application": "Synthesis rejection filter",
-    "domain": ["general"],
+    "domain": [
+      "general"
+    ],
     "category": "stability",
     "evidence_strength": "strong",
     "statistical_confidence": 0.95,
@@ -145,7 +174,9 @@
     "edge_cases": [],
     "fails_for": [],
     "evidence_count": 58000,
-    "validated_materials": ["GNoME_failed_synthesis"]
+    "validated_materials": [
+      "GNoME_failed_synthesis"
+    ]
   },
   {
     "rule_text": "Band gap 1.0-1.5 eV → Photovoltaics (optimal for single-junction solar cells)",
@@ -157,7 +188,10 @@
     "range_start": 1.0,
     "range_end": 1.5,
     "application": "Solar cells (Shockley-Queisser limit ~33%)",
-    "domain": ["photovoltaics", "semiconductors"],
+    "domain": [
+      "photovoltaics",
+      "semiconductors"
+    ],
     "category": "property_application",
     "evidence_strength": "strong",
     "statistical_confidence": 0.94,
@@ -168,9 +202,17 @@
     "publication_year": 2019,
     "validation_status": "validated",
     "rule_id": "rule_000006",
-    "edge_cases": ["tandem_cells", "hot_carrier_cells"],
+    "edge_cases": [
+      "tandem_cells",
+      "hot_carrier_cells"
+    ],
     "fails_for": [],
-    "validated_materials": ["Si", "GaAs", "CdTe", "CIGS"]
+    "validated_materials": [
+      "Si",
+      "GaAs",
+      "CdTe",
+      "CIGS"
+    ]
   },
   {
     "rule_text": "Band gap 3.0-5.0 eV AND direct gap → UV optoelectronics (LEDs, detectors)",
@@ -182,7 +224,10 @@
     "range_start": 3.0,
     "range_end": 5.0,
     "application": "UV LEDs, photodetectors",
-    "domain": ["optoelectronics", "wide_bandgap"],
+    "domain": [
+      "optoelectronics",
+      "wide_bandgap"
+    ],
     "category": "property_application",
     "evidence_strength": "strong",
     "statistical_confidence": 0.91,
@@ -193,9 +238,15 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000007",
-    "edge_cases": ["indirect_gap_materials"],
+    "edge_cases": [
+      "indirect_gap_materials"
+    ],
     "fails_for": [],
-    "validated_materials": ["GaN", "AlN", "ZnO"]
+    "validated_materials": [
+      "GaN",
+      "AlN",
+      "ZnO"
+    ]
   },
   {
     "rule_text": "Band gap 0.1-0.5 eV → Thermoelectric (narrow gap for Seebeck effect)",
@@ -207,7 +258,9 @@
     "range_start": 0.1,
     "range_end": 0.5,
     "application": "Thermoelectric generators (waste heat recovery)",
-    "domain": ["thermoelectric"],
+    "domain": [
+      "thermoelectric"
+    ],
     "category": "property_application",
     "evidence_strength": "medium",
     "statistical_confidence": 0.78,
@@ -218,9 +271,15 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000008",
-    "edge_cases": ["requires_high_carrier_mobility"],
+    "edge_cases": [
+      "requires_high_carrier_mobility"
+    ],
     "fails_for": [],
-    "validated_materials": ["Bi2Te3", "PbTe", "SnSe"]
+    "validated_materials": [
+      "Bi2Te3",
+      "PbTe",
+      "SnSe"
+    ]
   },
   {
     "rule_text": "Bulk modulus > 200 GPa → Structural applications (aerospace, armor)",
@@ -232,7 +291,10 @@
     "range_start": null,
     "range_end": null,
     "application": "High-stiffness structural materials",
-    "domain": ["structural", "ceramics"],
+    "domain": [
+      "structural",
+      "ceramics"
+    ],
     "category": "property_application",
     "evidence_strength": "strong",
     "statistical_confidence": 0.89,
@@ -243,9 +305,15 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000009",
-    "edge_cases": ["brittle_materials"],
+    "edge_cases": [
+      "brittle_materials"
+    ],
     "fails_for": [],
-    "validated_materials": ["Diamond", "c-BN", "SiC"]
+    "validated_materials": [
+      "Diamond",
+      "c-BN",
+      "SiC"
+    ]
   },
   {
     "rule_text": "Shear modulus > 100 GPa → High-strength materials (cutting tools, battery electrodes)",
@@ -257,7 +325,10 @@
     "range_start": null,
     "range_end": null,
     "application": "Wear-resistant coatings, high-cycle fatigue",
-    "domain": ["structural", "battery"],
+    "domain": [
+      "structural",
+      "battery"
+    ],
     "category": "property_application",
     "evidence_strength": "medium",
     "statistical_confidence": 0.82,
@@ -268,7 +339,9 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000010",
-    "edge_cases": ["requires_ductility_for_electrodes"],
+    "edge_cases": [
+      "requires_ductility_for_electrodes"
+    ],
     "fails_for": []
   },
   {
@@ -281,7 +354,9 @@
     "range_start": null,
     "range_end": null,
     "application": "Perovskite synthesis (solar cells, LEDs)",
-    "domain": ["perovskites"],
+    "domain": [
+      "perovskites"
+    ],
     "category": "synthesis",
     "evidence_strength": "strong",
     "statistical_confidence": 0.85,
@@ -292,10 +367,16 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000011",
-    "edge_cases": ["requires_tolerance_factor_check"],
+    "edge_cases": [
+      "requires_tolerance_factor_check"
+    ],
     "fails_for": [],
     "evidence_count": 12000,
-    "validated_materials": ["CaTiO3", "CsPbBr3", "MAPbI3"]
+    "validated_materials": [
+      "CaTiO3",
+      "CsPbBr3",
+      "MAPbI3"
+    ]
   },
   {
     "rule_text": "Pressure > 10 GPa → High-pressure polymorph (requires specialized synthesis)",
@@ -307,7 +388,9 @@
     "range_start": null,
     "range_end": null,
     "application": "High-pressure phase synthesis",
-    "domain": ["general"],
+    "domain": [
+      "general"
+    ],
     "category": "synthesis",
     "evidence_strength": "strong",
     "statistical_confidence": 0.93,
@@ -318,7 +401,9 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000012",
-    "edge_cases": ["metastable_recovery_to_ambient"],
+    "edge_cases": [
+      "metastable_recovery_to_ambient"
+    ],
     "fails_for": []
   },
   {
@@ -331,7 +416,10 @@
     "range_start": null,
     "range_end": null,
     "application": "Refractory materials, high-T ceramics",
-    "domain": ["ceramics", "refractories"],
+    "domain": [
+      "ceramics",
+      "refractories"
+    ],
     "category": "synthesis",
     "evidence_strength": "medium",
     "statistical_confidence": 0.72,
@@ -342,7 +430,317 @@
     "publication_year": 2019,
     "validation_status": "extracted",
     "rule_id": "rule_000013",
-    "edge_cases": ["phase_transitions_on_cooling"],
+    "edge_cases": [
+      "phase_transitions_on_cooling"
+    ],
     "fails_for": []
+  },
+  {
+    "rule_text": "Materials with energy above hull < 0.133 eV/atom are thermodynamically stable (90th percentile)",
+    "rule_type": "stability",
+    "property": "energy_above_hull",
+    "threshold_value": 0.133,
+    "threshold_unit": "eV/atom",
+    "operator": "<",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000014",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Materials with energy above hull < 0.367 eV/atom are highly stable (95th percentile)",
+    "rule_type": "stability",
+    "property": "energy_above_hull",
+    "threshold_value": 0.367,
+    "threshold_unit": "eV/atom",
+    "operator": "<",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000015",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Typical energy above hull is -0.430 eV/atom (median)",
+    "rule_type": "stability",
+    "property": "energy_above_hull",
+    "threshold_value": -0.43,
+    "threshold_unit": "eV/atom",
+    "operator": "=",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000016",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Typical energy above hull range: -1.682 to 0.133 eV/atom (10th-90th percentile)",
+    "rule_type": "stability",
+    "property": "energy_above_hull",
+    "threshold_value": null,
+    "threshold_unit": "eV/atom",
+    "operator": "range",
+    "range_start": -1.682,
+    "range_end": 0.133,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000017",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Materials with formation energy < -1.682 eV/atom are highly stable (10th percentile)",
+    "rule_type": "stability",
+    "property": "formation_energy",
+    "threshold_value": -1.682,
+    "threshold_unit": "eV/atom",
+    "operator": "<",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000018",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Materials with formation energy > 0.133 eV/atom are less stable (90th percentile)",
+    "rule_type": "stability",
+    "property": "formation_energy",
+    "threshold_value": 0.133,
+    "threshold_unit": "eV/atom",
+    "operator": ">",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000019",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Typical formation energy range: -1.682 to 0.133 eV/atom (10th-90th percentile)",
+    "rule_type": "stability",
+    "property": "formation_energy",
+    "threshold_value": null,
+    "threshold_unit": "eV/atom",
+    "operator": "range",
+    "range_start": -1.682,
+    "range_end": 0.133,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.064,
+    "confidence": 0.064,
+    "uncertainty": 0.936,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000020",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 640,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Stable materials typically have formation energy < -0.563 eV/atom (median of negative values)",
+    "rule_type": "stability",
+    "property": "formation_energy",
+    "threshold_value": -0.563,
+    "threshold_unit": "eV/atom",
+    "operator": "<",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.051,
+    "confidence": 0.051,
+    "uncertainty": 0.949,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000021",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 514,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Semiconductor materials typically have band gap around 1.68 eV (median, 0.1-4 eV range)",
+    "rule_type": "band_gap",
+    "property": "band_gap",
+    "threshold_value": 1.68,
+    "threshold_unit": "eV",
+    "operator": "=",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "property_application",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.006,
+    "confidence": 0.006,
+    "uncertainty": 0.994,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000022",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 64,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Semiconductor band gap range: 0.37 to 3.24 eV (10th-90th percentile, 0.1-4 eV)",
+    "rule_type": "band_gap",
+    "property": "band_gap",
+    "threshold_value": null,
+    "threshold_unit": "eV",
+    "operator": "range",
+    "range_start": 0.37,
+    "range_end": 3.24,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "property_application",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.006,
+    "confidence": 0.006,
+    "uncertainty": 0.994,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000023",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 64,
+    "validated_materials": []
+  },
+  {
+    "rule_text": "Materials with formation energy < -0.5 eV/atom and energy above hull < 0.1 eV/atom are thermodynamically stable",
+    "rule_type": "stability",
+    "property": "formation_energy",
+    "threshold_value": -0.5,
+    "threshold_unit": "eV/atom",
+    "operator": "<",
+    "range_start": null,
+    "range_end": null,
+    "application": "Materials database analysis",
+    "domain": [
+      "general"
+    ],
+    "category": "stability",
+    "evidence_strength": "weak",
+    "statistical_confidence": 0.028,
+    "confidence": 0.028,
+    "uncertainty": 0.972,
+    "source_paper_id": "oqmd_database_v1.5",
+    "source_section": "database",
+    "publication_year": null,
+    "validation_status": "extracted",
+    "rule_id": "rule_000024",
+    "edge_cases": [],
+    "fails_for": [],
+    "evidence_count": 283,
+    "validated_materials": []
   }
 ]
