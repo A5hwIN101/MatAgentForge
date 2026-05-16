@@ -170,6 +170,53 @@ async def analyze_material_debug(request: dict):
         media_type="text/plain"
     )
 
+@app.post("/api/feedback")
+async def submit_feedback(request: dict):
+    """
+    Feedback collection endpoint.
+    
+    Accepts user thumbs up/down + optional comment.
+    Logs to data/feedback.json
+    """
+    import os
+    from datetime import datetime
+    
+    material_name = request.get("material_name", "").strip()
+    thumbs_up = request.get("thumbs_up")
+    comment = request.get("comment", "")
+    
+    if not material_name or thumbs_up is None:
+        raise HTTPException(
+            status_code=400,
+            detail="material_name and thumbs_up are required"
+        )
+    
+    feedback_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "material_name": material_name,
+        "thumbs_up": thumbs_up,
+        "comment": comment
+    }
+    
+    # Ensure data dir exists
+    os.makedirs("data", exist_ok=True)
+    
+    # Append to feedback.json
+    feedback_file = "data/feedback.json"
+    feedback_list = []
+    
+    if os.path.exists(feedback_file):
+        with open(feedback_file, "r") as f:
+            feedback_list = json.load(f)
+    
+    feedback_list.append(feedback_entry)
+    
+    with open(feedback_file, "w") as f:
+        json.dump(feedback_list, f, indent=2)
+    
+    print(f"[Feedback] Recorded: {material_name} - thumbs_up={thumbs_up}")
+    
+    return {"status": "success", "message": "Feedback recorded"}
 
 @app.get("/docs")
 async def get_docs():
